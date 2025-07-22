@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emotion Detection</title>
+</head>
+<body>
+    <form action="/perform_emotion_detection" method="post">
+        <label>Type your text here</label><br>
+        <textarea name="emotion_text"></textarea><br>
+        <input type="submit" value="Emotion Detection">
+    </form>
+
+    {% if response %}
+        <p>Detected Emotion: <strong>{{ response.label }}</strong></p>
+        <p>Confidence: <strong>{{ "%.2f"|format(response.score) }}</strong></p>
+    {% endif %}
+
+</body>
+</html>
