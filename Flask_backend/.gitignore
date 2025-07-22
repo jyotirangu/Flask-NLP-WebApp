@@ -1,0 +1,21 @@
+# Python cache and environment
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.venv/
+env/
+ENV/
+.venv
+.venv.bak/
+*.env
+*.sqlite3
+instance/
+.settings.cfg
+
+# Logs
+*.log
+
+# VS Code
+.vscode/
+.DS_Store
