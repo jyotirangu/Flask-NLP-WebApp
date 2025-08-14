@@ -37,18 +37,6 @@ mail = Mail(app)
 # DB object 
 dbo = Database()
 
-# @app.route('/send-otp', methods=['POST'])
-# def send_otp():
-#     data = request.get_json()
-#     email = data.get('email')
-#     otp = str(random.randint(100000, 999999))
-#     session['otp'] = otp
-#     session['otp_email'] = email
-#     msg = Message('Your OTP Code', sender=app.config['MAIL_USERNAME'], recipients=[email])
-#     msg.body = f'Your OTP code is {otp}'
-#     mail.send(msg)
-#     return jsonify({'success': True, 'message': 'OTP sent to email.'})
-
 
 # ===== Unified responses =====
 # from flask import make_response
@@ -66,26 +54,6 @@ SESSION_KEY_OTP = "otp"
 SESSION_KEY_OTP_EMAIL = "otp_email"
 SESSION_KEY_OTP_EXPIRES = "otp_expires"
 SESSION_KEY_OTP_SENT_AT = "otp_sent_at"
-
-
-# @app.route('/send-otp', methods=['POST'])
-# def send_otp():
-#     # data = request.get_json()
-#     # email = data.get('email')
-    
-#     email = request.json.get('email')
-
-#     otp = str(random.randint(100000, 999999))  # Generate OTP
-
-#     try:
-#         msg = Message(subject='Your OTP Code',
-#                       recipients=[email],
-#                       body=f'Your OTP is {otp}')
-#         mail.send(msg)
-#         return jsonify({'message': 'OTP sent successfully'}), 200
-#     except Exception as e:
-#         return jsonify({'error': str(e)}), 500
-
 
 
 @app.route('/send-otp', methods=['POST'])
@@ -133,78 +101,6 @@ def send_otp():
         for k in (SESSION_KEY_OTP, SESSION_KEY_OTP_EMAIL, SESSION_KEY_OTP_EXPIRES):
             session.pop(k, None)
         return err(f"Failed to send OTP: {str(e)}", 500)
-
-
-
-
-
-# @app.route('/verify-otp', methods=['POST'])
-# def verify_otp():
-#     data = request.get_json()
-#     otp = data.get('otp')
-#     email = data.get('email')
-#     print("Session OTP:", session.get('otp'))
-#     print("Session Email:", session.get('otp_email'))
-#     print("Received OTP:", otp)
-#     print("Received Email:", email)
-#     if otp == session.get('otp') and email == session.get('otp_email'):
-#         return jsonify({'success': True, 'message': 'OTP verified.'})
-#     else:
-#         return jsonify({'success': False, 'message': 'Invalid OTP.'}), 400
-
-# @app.route('/verify-otp', methods=['POST'])
-# def verify_otp():
-#     user_otp = request.json.get('otp')
-
-#     if session.get('otp') == user_otp:
-#         session.pop('otp', None)  # Remove OTP after success
-#         return jsonify({'message': 'OTP verified'}), 200
-#     else:
-#         return jsonify({'error': 'Invalid OTP'}), 400
-
-
-# @app.route('/') 
-# def home():
-#     return {'message': 'Hello from Flask backend!'}
-
-# @app.route('/session-check')
-# def session_check():
-#     return jsonify({'logged_in': session.get('logged_in', False)})
-
-
-# @app.route('/api/register', methods=['POST'])
-# def perform_registration():
-#     data = request.get_json()
-#     name = data.get('user_name')
-#     email = data.get('user_email')
-#     password = data.get('user_password')
-
-#     # Email format validation
-#     email_regex = r'^[\w\.-]+@[\w\.-]+\.\w+$'
-#     if not re.match(email_regex, email):
-#         return jsonify({"success": False, "message": "Invalid email format."}), 400
-
-#     # Password strength validation
-#     password_regex = r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$'
-#     if not re.match(password_regex, password):
-#         return jsonify({
-#             "success": False,
-#             "message": "Password must include uppercase, lowercase, digit, special character and be at least 8 characters."
-#         }), 400
-
-#     hashed_password = generate_password_hash(password)
-#     # Insert into DB
-#     response = dbo.insert(name, email, hashed_password)
-
-#     if response:
-#         # Send registration success email
-#         msg = Message('Registration Successful', sender=app.config['MAIL_USERNAME'], recipients=[email])
-#         msg.body = f'Hello {name},\n\nYour registration was successful! You can now log in with your email: {email}.'
-#         mail.send(msg)
-#         return jsonify({"success": True, "message": "Registration successful."})
-#     else:
-#         return jsonify({"success": False, "message": "Email already exists."}), 409
-
 
 
 @app.route('/verify-otp', methods=['POST'])
@@ -282,36 +178,6 @@ def perform_ner():
     else:
         return jsonify({'error': 'Unauthorized'}), 401
   
-  
-# @app.route('/reset-password', methods=['POST'])
-# def reset_password():
-#     data = request.get_json()
-#     email = data.get('email')
-#     otp = data.get('otp')
-#     new_password = data.get('new_password')
-
-#     # Check OTP and email match session
-#     if otp == session.get('otp') and email == session.get('otp_email'):
-#         # Password strength validation (reuse your regex)
-#         password_regex = r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$'
-#         if not re.match(password_regex, new_password):
-#             return jsonify({
-#                 "success": False,
-#                 "message": "Password must include uppercase, lowercase, digit, special character and be at least 8 characters."
-#             }), 400
-
-#         hashed_password = generate_password_hash(new_password)
-#         # Update password in DB
-#         result = dbo.update_password(email, hashed_password)
-#         if result:
-#             # Optionally clear OTP from session
-#             session.pop('otp', None)
-#             session.pop('otp_email', None)
-#             return jsonify({"success": True, "message": "Password reset successful."})
-#         else:
-#             return jsonify({"success": False, "message": "Failed to update password."}), 500
-#     else:
-#         return jsonify({"success": False, "message": "Invalid OTP or email."}), 400
   
     
 @app.route('/reset-password', methods=['POST'])
