@@ -12,6 +12,7 @@ ENV/
 *.sqlite3
 instance/
 settings.cfg
+venv/
 
 # Logs
 *.log
