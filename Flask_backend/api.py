@@ -8,7 +8,7 @@ from transformers import pipeline
 emotion_classifier = pipeline(
     "text-classification",
     model="j-hartmann/emotion-english-distilroberta-base",
-    top_k=None  
+    top_k=None
 )
 
 nlp = spacy.load("en_core_web_lg")

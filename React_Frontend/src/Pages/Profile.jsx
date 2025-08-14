@@ -25,6 +25,7 @@ function Profile() {
           <Link to="/ner" className="profile-card">Named Entity Recognition (NER)</Link>
           <Link to="/sentiment" className="profile-card">Sentiment Analysis</Link>
           <Link to="/emotion" className="profile-card">Emotion Detection</Link>
+          <button onClick={handleLogout}>Logout</button>
         </div>
       </div>
     </div>

@@ -8,6 +8,7 @@ import Home from "./Pages/Home";
 import NER from "./Pages/NER";
 import Sentiment from "./Pages/Sentiment";
 import Emotion from "./Pages/Emotion";
+import ForgotPassword from './Pages/ForgotPassword';
 import ProtectedRoute from "./components/ProtectedRoute";
 import './index.css'; 
 
@@ -21,6 +22,7 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
 
         {/* Protected Routes */}
         <Route
