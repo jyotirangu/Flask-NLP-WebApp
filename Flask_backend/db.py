@@ -66,3 +66,17 @@ class Database:
         except Exception as e:
             print("❌ Error fetching user by email:", e)
             return None
+        
+        
+    def update_password(self, email, new_password):
+        try:
+            self.cur.execute(
+                "UPDATE users SET password = %s WHERE email = %s",
+                (new_password, email)
+            )
+            self.conn.commit()
+            return self.cur.rowcount > 0
+        except Exception as e:
+            print("❌ Error updating password:", e)
+            self.conn.rollback()
+            return False

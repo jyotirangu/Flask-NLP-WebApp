@@ -15,6 +15,12 @@ function Profile() {
   }, [navigate]);
 
 
+  const handleLogout = () => {
+    localStorage.removeItem('isLoggedIn'); // remove login flag
+    localStorage.removeItem('user');       // optional: remove user data if stored
+    navigate('/login');                    // redirect to login page
+  };
+
   return (
     <div className="profile-a">
       <div className="profile-b">
