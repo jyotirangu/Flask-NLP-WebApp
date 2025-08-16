@@ -119,7 +119,7 @@ function Login() {
 
       if (response.data.success) {
         toast.success('Login successful!');
-        sessionStorage.setItem('isLoggedIn', 'true');
+        localStorage.setItem('isLoggedIn', 'true');
         navigate('/profile');
       } else {
         toast.error(response.data.message || '❌ Login failed. Please try again.');
