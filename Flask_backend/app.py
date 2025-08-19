@@ -164,6 +164,39 @@ def logout():
     return jsonify({"success": True, "message": "Logged out successfully."})
 
 
+
+
+@app.route('/api/register', methods=['POST', 'OPTIONS'])
+def register():
+    if request.method == "OPTIONS":
+        return jsonify({"message": "Preflight OK"}), 200
+
+    data = request.get_json(silent=True) or {}
+    name = data.get('user_name')
+    email = data.get('user_email')
+    password = data.get('user_password')
+
+    if not all([name, email, password]):
+        return err("All fields are required.", 400)
+
+    # Hash the password
+    hashed_password = generate_password_hash(password)
+
+    # Insert into DB
+    result = dbo.insert(name, email, hashed_password)
+
+    if result == 1:
+        
+        return jsonify({
+            "success": True,
+            "message": "User registered successfully. Please login now."
+        }), 200
+    else:
+        return err("Email already exists ❌", 400)
+
+
+
+
 @app.route('/perform_ner', methods=['POST'])
 def perform_ner():
     if session.get('logged_in'):

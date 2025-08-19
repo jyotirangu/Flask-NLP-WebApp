@@ -53,8 +53,9 @@ function Register() {
     try {
       const response = await axios.post(`${API_URL}/api/register`, user, { withCredentials: true });
       if (response.data.success) {
-        setShowOtp(true);
-        toast.success("Registration successful! OTP sent to your email. Please verify.");
+      
+        toast.success("Registration successful! Please login.");
+        setTimeout(() => navigate('/login'), 1500); // ✅ redirect after 1.5s
       } else {
         toast.error(response.data.message || 'Registration failed ❌');
       }
@@ -63,22 +64,6 @@ function Register() {
     }
   };
 
-  const handleOtpSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      const res = await axios.post(`${API_URL}/verify-otp`, 
-        { email: user.user_email, otp }, 
-        { withCredentials: true });
-      if (res.data.success) {
-        toast.success("OTP verified! You can now log in.");
-        setTimeout(() => navigate('/login'), 1000);
-      } else {
-        toast.error(res.data.message || "Invalid OTP");
-      }
-    } catch (error) {
-      toast.error(error.response?.data?.message || "OTP verification failed");
-    }
-  };
 
   return (
     <div className="lr-container">
