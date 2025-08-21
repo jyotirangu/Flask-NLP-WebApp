@@ -105,3 +105,54 @@ cursor: pointer;
   color: #555;
 }
 
+/* Email + Verify Button wrapper */
+.email-verify-wrapper {
+  display: flex;
+  position: relative;
+  width: 100%;
+}
+
+
+.email-verify-wrapper input {
+  width: 100%;
+  padding: 10px 100px 10px 12px; 
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  outline: none;
+  box-sizing: border-box;
+}
+
+.email-btn {
+  width: 100px;
+  position: absolute;
+  top: 50%;
+  right: 8px;
+  transform: translateY(-50%);
+  background-color: #2563eb;
+  color: #fff;
+  border: none;
+  padding: 6px 14px;
+  border-radius: 6px;
+  font-size: 12.5px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.verify-btn:hover {
+  background-color: #1e40af;
+}
+.otp-btn {
+  width: 100px;
+  position: absolute;
+  top: 42.80%;
+  right: 38px;
+  transform: translateY(-50%);
+  background-color: #2563eb;
+  color: #fff;
+  border: none;
+  padding: 6px 14px;
+  border-radius: 6px;
+  font-size: 12.5px;
+  cursor: pointer;
+  transition: 0.2s;
+}

@@ -110,7 +110,7 @@ def verify_otp():
     user_otp = data.get('otp')
 
     if not user_email or not user_otp:
-        return err("Email and OTP are required.", 400)
+        return err("OTP is required.", 400)
 
     stored_otp = session.get(SESSION_KEY_OTP)
     stored_email = session.get(SESSION_KEY_OTP_EMAIL)
@@ -178,6 +178,19 @@ def register():
 
     if not all([name, email, password]):
         return err("All fields are required.", 400)
+     
+    EMAIL_REGEX = r'^[\w\.-]+@[\w\.-]+\.\w+$'
+    if not re.match(EMAIL_REGEX, email):
+        return err("Invalid email format ❌", 400)
+    
+    # ✅ Check OTP verified before registering
+    if not session.get("otp_verified") or session.get("otp_verified") is not True:
+        return err("Please verify your email with OTP before registering ❌", 400)
+    
+    # ✅ Check OTP email == registration email
+    if session.get("otp_email") != email:
+        return err("OTP was not verified for this email ❌", 400)
+
 
     # Hash the password
     hashed_password = generate_password_hash(password)
@@ -186,6 +199,10 @@ def register():
     result = dbo.insert(name, email, hashed_password)
 
     if result == 1:
+        # ✅ Clear OTP state after successful registration
+        for k in ("otp_verified", "otp_email", "otp", "otp_expires"):
+            session.pop(k, None)
+
         
         return jsonify({
             "success": True,

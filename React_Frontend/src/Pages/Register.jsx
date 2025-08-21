@@ -20,15 +20,58 @@ function Register() {
 
   const [showOtp, setShowOtp] = useState(false);
   const [otp, setOtp] = useState('');
+  const [showOtpInput, setShowOtpInput] = useState(false);
+  const [isEmailVerified, setIsEmailVerified] = useState(false);
 
   const navigate = useNavigate();
 
   const handleChange = (e) => {
     setUser({ ...user, [e.target.name]: e.target.value });
   };
+  // ✅ Send OTP
+  const handleSendOtp = async () => {
+    if (!user.user_email) {
+      toast.error("Enter email first");
+      return;
+    }
 
-  const handleSubmit = async (e) => {
+    try {
+      const response = await axios.post(`${API_URL}/send-otp`, { email: user.user_email }, { withCredentials: true });
+      if (response.data.success) {
+        toast.success("OTP sent to your email ✅");
+        setShowOtpInput(true); // show OTP input field
+      } else {
+        toast.error(response.data.message || "Failed to send OTP ❌");
+      }
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Error sending OTP ❌");
+    }
+  };
+
+   // ✅ Verify OTP
+  const handleOtpSubmit = async (e) => {
     e.preventDefault();
+    try {
+      const response = await axios.post(`${API_URL}/verify-otp`, { email: user.user_email, otp }, { withCredentials: true });
+      if (response.data.success) {
+        toast.success("Email verified ✅");
+        setIsEmailVerified(true);   // 👉 Mark verified
+        setShowOtpInput(false);     // 👉 Hide OTP input after success
+      } else {
+        toast.error(response.data.message || "OTP verification failed ❌");
+      }
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Error verifying OTP ❌");
+    }
+  };
+
+    const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (!isEmailVerified) {
+      toast.error("Please verify your email first ❌");
+      return;
+    }
 
     const { user_name, user_email, user_password, confirm_password } = user;
 
@@ -78,6 +121,7 @@ function Register() {
             onChange={handleChange}
             required
           />
+          <div className="email-verify-wrapper">
           <input
             type="email"
             name="user_email"
@@ -86,6 +130,29 @@ function Register() {
             onChange={handleChange}
             required
           />
+          {!isEmailVerified && (
+            <button type="button" onClick={handleSendOtp} className="email-btn">
+              Verify Email
+            </button>
+          )}
+        </div>
+
+        {/* OTP input (only visible when user clicks Verify Email) */}
+        {showOtpInput && (
+          <div className="otp-wrapper">
+            <input
+              type="text"
+              placeholder="Enter OTP"
+              value={otp}
+              onChange={e => setOtp(e.target.value)}
+              required
+            />
+            <button type="button" onClick={handleOtpSubmit} className="otp-btn">
+              Submit OTP
+            </button>
+          </div>
+        )}
+
           <div className="password-wrapper">
             <input
               type={showPassword ? "text" : "password"}
